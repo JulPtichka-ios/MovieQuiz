@@ -1,56 +1,27 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    // MARK: - Types
 
-        DispatchQueue.main.async {
-            let firstQuestion = self.questions[self.currentQuestionIndex]
-            let viewModel = self.convert(model: firstQuestion)
-            self.show(quiz: viewModel)
-        }
-    }
-
-    // MARK: - Models
-    struct QuizResultsViewModel {
+    private struct QuizResultsViewModel {
         let title: String
         let text: String
         let buttonText: String
     }
 
-    struct QuizQuestion {
+    private struct QuizQuestion {
         let image: String
         let text: String
         let correctAnswer: Bool
     }
 
-    struct QuizStepViewModel {
+    private struct QuizStepViewModel {
         let image: UIImage
         let question: String
         let questionNumber: String
     }
 
-    // MARK: - Outlets
-    @IBOutlet var textLabel: UILabel!
-    @IBOutlet var imageView: UIImageView!
-    @IBOutlet var counterLabel: UILabel!
-
-    // MARK: - Actions
-    @IBAction func noButtonClicked(_ sender: UIButton) {
-        let currentQuestion = questions[currentQuestionIndex]
-        let givenAnswer = false
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-    }
-
-    @IBAction func yesButtonClicked(_ sender: UIButton) {
-        let currentQuestion = questions[currentQuestionIndex]
-        let givenAnswer = true
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-    }
-
-    // MARK: - Private properties
-    private var currentQuestionIndex = 0
-    private var correctAnswers = 0
+    // MARK: - Constants
 
     private let questions: [QuizQuestion] = [
         QuizQuestion(
@@ -105,7 +76,49 @@ final class MovieQuizViewController: UIViewController {
         )
     ]
 
+    // MARK: - IBOutlet
+
+    @IBOutlet private var textLabel: UILabel!
+    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var counterLabel: UILabel!
+    @IBOutlet var noButton: UIButton!
+    @IBOutlet var yesButton: UIButton!
+
+    // MARK: - Private Properties
+
+    private var currentQuestionIndex = 0
+    private var correctAnswers = 0
+
+    // MARK: - UIViewController
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        DispatchQueue.main.async {
+            let firstQuestion = self.questions[self.currentQuestionIndex]
+            let viewModel = self.convert(model: firstQuestion)
+            self.show(quiz: viewModel)
+        }
+    }
+
+    // MARK: - IBAction
+
+    @IBAction private func noButtonClicked(_ sender: UIButton) {
+        disableButtons()
+        let currentQuestion = questions[currentQuestionIndex]
+        let givenAnswer = false
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
+
+    @IBAction private func yesButtonClicked(_ sender: UIButton) {
+        disableButtons()
+        let currentQuestion = questions[currentQuestionIndex]
+        let givenAnswer = true
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
+
     // MARK: - Private methods
+
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
             image: UIImage(named: model.image) ?? UIImage(),
@@ -116,9 +129,11 @@ final class MovieQuizViewController: UIViewController {
     }
 
     private func show(quiz step: QuizStepViewModel) {
+        imageView.layer.borderWidth = 0
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
+        enableButtons()
     }
 
     private func show(quiz result: QuizResultsViewModel) {
@@ -172,5 +187,15 @@ final class MovieQuizViewController: UIViewController {
 
             show(quiz: viewModel)
         }
+    }
+
+    private func disableButtons() {
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
+    }
+
+    private func enableButtons() {
+        yesButton.isEnabled = true
+        noButton.isEnabled = true
     }
 }
