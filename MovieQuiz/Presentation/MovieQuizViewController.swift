@@ -3,11 +3,11 @@ import UIKit
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - IBOutlet
 
-    @IBOutlet private var textLabel: UILabel!
-    @IBOutlet private var imageView: UIImageView!
-    @IBOutlet private var counterLabel: UILabel!
-    @IBOutlet private var noButton: UIButton!
-    @IBOutlet private var yesButton: UIButton!
+    @IBOutlet private weak var textLabel: UILabel!
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var counterLabel: UILabel!
+    @IBOutlet private weak var noButton: UIButton!
+    @IBOutlet private weak var yesButton: UIButton!
 
     // MARK: - Private Properties
 
@@ -17,9 +17,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
-    private var alertPresenter = AlertPresenter()
     private var statisticService: StatisticServiceProtocol!
-    private var alertModelFactory: AlertModelFactory!
+    private var resultAlertPresenter: ResultAlertPresenter!
 
     // MARK: - UIViewController
 
@@ -30,8 +29,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         self.questionFactory = questionFactory
         questionFactory.requestNextQuestion()
         statisticService = StatisticService()
-        alertModelFactory = AlertModelFactory(statisticService: statisticService)
-        alertPresenter = AlertPresenter()
+        resultAlertPresenter = ResultAlertPresenter(
+            viewController: self,
+            statisticService: statisticService
+        )
     }
 
     // MARK: - QuestionFactoryDelegate
@@ -51,28 +52,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
     // MARK: - IBAction
 
-    @IBAction private func noButtonClicked(_ sender: UIButton) {
+    private func handleAnswer(_ answer: Bool) {
         disableButtons()
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let givenAnswer = false
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        guard let currentQuestion = currentQuestion else { return }
+        showAnswerResult(isCorrect: answer == currentQuestion.correctAnswer)
     }
 
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        disableButtons()
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let givenAnswer = true
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        handleAnswer(true)
+    }
+
+    @IBAction private func noButtonClicked(_ sender: UIButton) {
+        handleAnswer(false)
     }
 
     // MARK: - Private methods
 
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        print(model.image)
         return QuizStepViewModel(
             image: UIImage(named: model.image) ?? UIImage(),
             question: model.text,
@@ -89,10 +85,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
 
     private func show(quiz result: QuizResultsViewModel) {
-        let alertModel = alertModelFactory.makeResultAlert(
-            for: result,
+        resultAlertPresenter.showResults(
+            result: result,
             correctAnswers: correctAnswers,
-            total: questionsAmount
+            totalQuestions: questionsAmount
         ) { [weak self] in
             guard let self = self else { return }
             self.currentQuestionIndex = 0
@@ -100,8 +96,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             (self.questionFactory as? QuestionFactory)?.restartRound()
             self.questionFactory?.requestNextQuestion()
         }
-
-        alertPresenter.show(in: self, model: alertModel)
     }
 
     private func showAnswerResult(isCorrect: Bool) {
