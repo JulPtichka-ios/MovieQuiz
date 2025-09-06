@@ -19,7 +19,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticServiceProtocol!
-    private var resultAlertPresenter: ResultAlertPresenter!
+    private var resultAlertPresenter: ResultAlertPresenter?
     private var alertPresenter: AlertPresenter!
 
     // MARK: - UIViewController
@@ -32,6 +32,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         showLoadingIndicator()
         questionFactory?.loadData()
         alertPresenter = AlertPresenter()
+        resultAlertPresenter = ResultAlertPresenter(
+            viewController: self,
+            statisticService: statisticService
+        )
     }
 
     // MARK: - QuestionFactoryDelegate
@@ -94,7 +98,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
 
     private func show(quiz result: QuizResultsViewModel) {
-        resultAlertPresenter.showResults(
+        resultAlertPresenter?.showResults(
             result: result,
             correctAnswers: correctAnswers,
             totalQuestions: questionsAmount
@@ -164,8 +168,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         hideLoadingIndicator()
 
         let model = AlertModel(
-            title: "Ошибка",
-            message: message,
+            title: "Что-то пошло не так(",
+            message: "Невозможно загрузить данные",
             buttonText: "Попробовать еще раз"
         ) { [weak self] in
             guard let self = self else { return }

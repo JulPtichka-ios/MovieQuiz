@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,15 +17,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="lri-NF-NLZ">
-                                <rect key="frame" x="-217" y="-23" width="842" height="919"/>
+                                <rect key="frame" x="-217" y="25" width="842" height="871"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="lri-NF-NLZ" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="RqT-e3-r0H"/>
                             <constraint firstItem="lri-NF-NLZ" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" constant="211" id="TBf-GV-hZs"/>
                             <constraint firstItem="lri-NF-NLZ" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="cKH-XP-Q6e"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="leading" secondItem="lri-NF-NLZ" secondAttribute="leading" constant="217" id="iZk-gl-ZnJ"/>
+                            <constraint firstItem="lri-NF-NLZ" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ohF-2a-NaI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="lri-NF-NLZ" secondAttribute="top" constant="71" id="tET-EC-brm"/>
                         </constraints>
                     </view>
