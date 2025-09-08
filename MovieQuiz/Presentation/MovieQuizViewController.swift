@@ -3,12 +3,12 @@ import UIKit
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - IBOutlet
 
-    @IBOutlet private var textLabel: UILabel!
-    @IBOutlet private var imageView: UIImageView!
-    @IBOutlet private var counterLabel: UILabel!
-    @IBOutlet private var noButton: UIButton!
-    @IBOutlet private var yesButton: UIButton!
-    @IBOutlet private var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak private var textLabel: UILabel!
+    @IBOutlet weak private var imageView: UIImageView!
+    @IBOutlet weak private var counterLabel: UILabel!
+    @IBOutlet weak private var noButton: UIButton!
+    @IBOutlet weak private var yesButton: UIButton!
+    @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
 
     // MARK: - Private Properties
 
@@ -24,18 +24,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
     // MARK: - UIViewController
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.layer.cornerRadius = 20
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-        statisticService = StatisticService()
-        showLoadingIndicator()
-        questionFactory?.loadData()
-        alertPresenter = AlertPresenter()
-        resultAlertPresenter = ResultAlertPresenter(
-            viewController: self,
-            statisticService: statisticService
-        )
+        configureUI()
+        configureServices()
+        loadQuizData()
     }
 
     // MARK: - QuestionFactoryDelegate
@@ -182,4 +176,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
 
         alertPresenter.show(in: self, model: model)
     }
+    
+    private func configureUI() {
+        imageView.layer.cornerRadius = 20
+        showLoadingIndicator()
+    }
+
+    private func configureServices() {
+        statisticService = StatisticService()
+        alertPresenter = AlertPresenter()
+        resultAlertPresenter = ResultAlertPresenter(
+            viewController: self,
+            statisticService: statisticService
+        )
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+    }
+
+    private func loadQuizData() {
+        questionFactory?.loadData()
+    }
+
 }
