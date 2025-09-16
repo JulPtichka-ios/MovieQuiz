@@ -38,16 +38,14 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.showNetworkError(message: message)
     }
 
-    // <- тут исправлено имя метода: Receive (не Recieve)
     func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else {
-            return
-        }
+        guard let question else { return }
 
         currentQuestion = question
         let viewModel = convert(model: question)
         DispatchQueue.main.async { [weak self] in
-            self?.viewController?.show(quiz: viewModel)
+            guard let self else { return }
+            viewController?.show(quiz: viewModel)
         }
     }
 
@@ -58,9 +56,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
 
     func didAnswer(isCorrectAnswer: Bool) {
-        if isCorrectAnswer {
-            correctAnswers += 1
-        }
+        guard isCorrectAnswer else { return }
+        correctAnswers += 1
     }
 
     func restartGame() {
@@ -90,12 +87,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
 
     private func didAnswer(isYes: Bool) {
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-
-        let givenAnswer = isYes
-        proceedWithAnswer(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        guard let currentQuestion = currentQuestion else { return }
+        proceedWithAnswer(isCorrect: isYes == currentQuestion.correctAnswer)
     }
 
     private func proceedWithAnswer(isCorrect: Bool) {
